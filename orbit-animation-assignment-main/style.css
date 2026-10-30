@@ -1,0 +1,385 @@
+/* ==========================================================================
+   დავალება: CSS ORBITING MENU ANIMATION
+   სტუდენტის სამუშაო სტილები & გზამკვლევი
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   0. RESET & ბაზისური განლაგება
+   -------------------------------------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  display: grid;
+  place-items: center;
+  background-color: #f0f7fe;
+  font-family: "Montserrat", "Arial", sans-serif;
+  overflow: hidden;
+}
+
+/* --------------------------------------------------------------------------
+   1. CSS ცვლადები & პარამეტრები (მზა კონფიგურაცია)
+   -------------------------------------------------------------------------- */
+.menu {
+  /* ანიმაციის ფუნქციები (Easing) */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-expo: cubic-bezier(0.87, 0, 0.13, 1);
+
+  /* ელემენტების ზომები */
+  --avatar-size: 12em;
+  --item-size: 8em;
+  --icon-size: 2.75em;
+  --orbit-spacing: 4.5em;
+  --orbit-items: 9;
+  --orbit-phase: 0deg;
+  --orbit-dur: 60s;
+  --orbit-delay: 2s;
+
+  /* მათემატიკური ნაბიჯი: 360deg გაყოფილი ელემენტების რაოდენობაზე (8 -> 45deg) */
+  --orbit-step: calc(360deg / var(--orbit-items));
+}
+
+/* ზომების უნიფიცირება */
+.menu,
+.avatar,
+.orbit,
+.orbit li,
+.item-wrap,
+.item,
+.icon,
+.icon svg {
+  width: var(--size);
+  height: var(--size);
+}
+
+/* --------------------------------------------------------------------------
+   2. 8 ელემენტის ფერთა პალიტრა & პოზიციები (მზა მონაცემები)
+   -------------------------------------------------------------------------- */
+li.adduser {
+  --pos: 0;
+  --bg-color: #d5a3da;
+  --icon-color: #470c4a;
+  --hover-color: #6f1578;
+}
+
+li.calendar {
+  --pos: 1;
+  --bg-color: #a8e0ab;
+  --icon-color: #105214;
+  --hover-color: #1d8222;
+}
+
+li.chart {
+  --pos: 2;
+  --bg-color: #a7c4e0;
+  --icon-color: #123350;
+  --hover-color: #1e4f82;
+}
+
+li.gavel {
+  --pos: 3;
+  --bg-color: #fdd095;
+  --icon-color: #8f5203;
+  --hover-color: #d07906;
+}
+
+li.plane {
+  --pos: 4;
+  --bg-color: #b1b8e1;
+  --icon-color: #2f3a83;
+  --hover-color: #2f3a83;
+}
+
+li.logout {
+  --pos: 5;
+  --bg-color: #f3edab;
+  --icon-color: #686017;
+  --hover-color: #564f0f;
+}
+
+li.drink {
+  --pos: 6;
+  --bg-color: #d5ad98;
+  --icon-color: #5a4135;
+  --hover-color: #7f5b4d;
+}
+
+li.fingerprint {
+  --pos: 7;
+  --bg-color: #eaa7a8;
+  --icon-color: #5c1414;
+  --hover-color: #931e1e;
+}
+
+li.star {
+  --pos: 8;
+  --bg-color: #a9e3dc;
+  --icon-color: #0f4f48;
+  --hover-color: #17847a;
+}
+
+li.plane svg {
+  transform-origin: 50% 50%;
+  transform: rotate(-45deg);
+}
+
+.icon svg {
+  --size: 100%;
+  fill: var(--icon-color);
+  transition: 0.3s;
+}
+
+/* ==========================================================================
+   სტუდენტის დასაწერი კოდი (ეტაპობრივი ინსტრუქცია)
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   ნაბიჯი 1: მთავარი კონტეინერი (.menu) და ცენტრალური ბირთვი (.avatar)
+   - .menu უნდა იყოს grid კონტეინერი (place-items: center).
+   - .avatar უნდა იჯდეს იმავე grid-area-ში (1 / -1), ჰქონდეს ფერი #162a4c,
+     და მომრგვალებული კუთხეები (calc(0.31 * var(--size))).
+   -------------------------------------------------------------------------- */
+.menu {
+  --size: var(--avatar-size);
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+
+.avatar {
+  --size: var(--avatar-size);
+  position: relative;
+  z-index: 1;
+  grid-area: 1 / -1;
+  border-radius: calc(0.31 * var(--size));
+  background-color: #162a4c;
+  transition: 1s;
+}
+
+/* --------------------------------------------------------------------------
+   ნაბიჯი 2: ორბიტის კონტეინერი (.orbit) და ელემენტების (.orbit li) წრიული განლაგება
+   
+   მათემატიკა:
+   1. გამოთვალე ორბიტის რადიუსი:
+      --orbit-radius = 0.5 * (avatar-size + item-size) + orbit-spacing
+   2. გამოთვალე თითოეული ელემენტის კუთხე:
+      --angle = var(--pos) * var(--orbit-step)
+   3. გადაწიე ბრუნვის ცენტრი (transform-origin):
+      transform-origin: 50% calc(50% + var(--orbit-radius));
+   4. შეატრიალე ელემენტი თავის კუთხეზე (rotate).
+   -------------------------------------------------------------------------- */
+.orbit {
+  --size: 100%;
+  position: relative;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  place-items: center;
+  grid-area: 1 / -1;
+  animation: orbit linear var(--orbit-dur) var(--orbit-delay) both infinite;
+}
+
+.orbit li {
+  --size: var(--item-size);
+  --angle: calc(var(--pos) * var(--orbit-step));
+  --orbit-radius: calc(
+    0.5 * (var(--avatar-size) + var(--item-size)) + var(--orbit-spacing)
+  );
+  position: relative;
+  bottom: var(--orbit-radius);
+  grid-area: 1 / -1;
+  border-radius: 100%;
+  transform-origin: 50% calc(50% + var(--orbit-radius));
+  transform: rotate(calc(-1 * var(--angle) + var(--orbit-phase)));
+  transition: 0.3s;
+  list-style: none;
+}
+
+/* --------------------------------------------------------------------------
+   ნაბიჯი 3: ორბიტალური ბრუნვის ანიმაცია (@keyframes orbit)
+   - .orbit კონტეინერი უნდა ბრუნავდეს 0deg-დან 360deg-მდე უსასრულოდ (infinite).
+   -------------------------------------------------------------------------- */
+@keyframes orbit {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* --------------------------------------------------------------------------
+   ნაბიჯი 4: COUNTER-ROTATION (.item-wrap)
+   
+   კრიტიკული ნაწილი:
+   როდესაც ორბიტა ბრუნავს 360 გრადუსით, შიდა აიქონებიც ბრუნავს და თავდაყირა
+   დგება. რათა აიქონი ყოველთვის სწორად (upright) დარჩეს, .item-wrap უნდა
+   ვატრიალოთ საპირისპირო მიმართულებით (-360deg)!
+   -------------------------------------------------------------------------- */
+.item-wrap {
+  --size: 100%;
+  border-radius: inherit;
+  transform-origin: center;
+  transform: rotate(calc(var(--angle) - var(--orbit-phase)));
+  animation: counter-orbit linear var(--orbit-dur) var(--orbit-delay) both infinite;
+}
+
+@keyframes counter-orbit {
+  from { transform: rotate(calc(0deg + var(--angle) - var(--orbit-phase))); }
+  to   { transform: rotate(calc(-360deg + var(--angle) - var(--orbit-phase))); }
+}
+
+/* --------------------------------------------------------------------------
+   ნაბიჯი 5: ვიზუალური გაფორმება & HOVER ეფექტები (.item)
+   - .item: მრგვალი ფორმა, ჩრდილი, ფონი var(--bg-color), პულსაციის ანიმაცია.
+   - .item:hover: ანიმაციის დაპაუზება (animation-play-state: paused).
+   - .item:hover .icon: აიქონის ზემოთ აწევა (translateY).
+   - .item::after: კატეგორიის ტექსტის გამოჩენა (content: attr(data-category)).
+   - .orbit:hover: მთელი ორბიტის დაპაუზება.
+   -------------------------------------------------------------------------- */
+.item {
+  --size: 100%;
+  border-radius: inherit;
+  background: var(--bg-color);
+  overflow: hidden;
+  padding: calc(0.5 * (var(--item-size) - var(--icon-size)));
+  box-shadow: 0 0.75em 1em 0 rgba(0, 0, 0, 0.05);
+  transition: 0.2s;
+  animation: throbbing ease-in-out 1.5s calc(1s + var(--pos) * 0.15s) both infinite alternate;
+}
+
+@keyframes throbbing {
+  from { transform: scale(0.95); }
+  to   { transform: scale(1.05); }
+}
+
+.icon {
+  transition: all 0.3s 0.1s, background 0.3s;
+}
+
+.item:hover {
+  background: radial-gradient(transparent 62%, rgba(0, 0, 0, 0.25)), var(--hover-color);
+  animation-play-state: paused;
+}
+
+.item::after {
+  position: absolute;
+  inset: 0;
+  padding: 3.5em 1.5em 1.5em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 0.9em;
+  text-align: center;
+  content: attr(data-category);
+  opacity: 0;
+  transform: scale(0.9) translateY(1em);
+  transition: 0.3s;
+}
+
+.item:hover .icon svg {
+  fill: white;
+  transform: scale(0.5);
+}
+
+.item:hover .icon {
+  border-radius: 0 0 100% 100%;
+  background: rgba(0, 0, 0, 0.5);
+  transform: translateY(-2.65em);
+  transition: all 0.3s, background 0.3s 0.15s;
+}
+
+.item:hover::after {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.orbit:hover,
+.orbit:hover .item-wrap {
+  animation-play-state: paused;
+}
+
+/* --------------------------------------------------------------------------
+   ნაბიჯი 6: ინტერაქციული ორბიტის გაფართოება
+   - როდესაც მაუსს მივიტანთ .avatar-ზე, ორბიტის რადიუსი/დაშორება უნდა გაიზარდოს:
+     .avatar:hover ~ .orbit { --orbit-spacing: 6em; }
+   -------------------------------------------------------------------------- */
+.avatar:hover ~ .orbit {
+  --orbit-spacing: 6em;
+}
+
+/* ==========================================================================
+   დამატებითი გამოწვევები
+   ========================================================================== */
+
+/* 2. დინამიკური სიჩქარე: --orbit-dur იცვლება არჩეული radio-ს მიხედვით */
+body:has(#speed-mid:checked) .menu  { --orbit-dur: 30s; }
+body:has(#speed-fast:checked) .menu { --orbit-dur: 20s; }
+
+/* 1. Reverse Orbit: ორივე ანიმაცია (orbit + counter-orbit) ერთად ტრიალდება უკუღმა,
+      ამიტომ აიქონები ისევ სწორად რჩება */
+body:has(#reverse:checked) .orbit,
+body:has(#reverse:checked) .item-wrap {
+  animation-direction: reverse;
+}
+
+/* მართვის პანელი */
+.controls {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background: #fff;
+  border-radius: 999px;
+  box-shadow: 0 0.5rem 1.5rem rgba(22, 42, 76, 0.15);
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.controls .sep {
+  width: 1px;
+  height: 1.25rem;
+  background: #d6e3f3;
+}
+
+.ctl {
+  position: relative;
+  padding: 0.5rem 0.9rem;
+  border-radius: 999px;
+  color: #162a4c;
+  cursor: pointer;
+  transition: 0.2s;
+  user-select: none;
+}
+
+.ctl:hover { background: #eaf2fc; }
+
+.ctl input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.ctl:has(input:checked) {
+  background: #162a4c;
+  color: #fff;
+}
+
+.ctl:has(input:focus-visible) {
+  outline: 2px solid #1e4f82;
+  outline-offset: 2px;
+}

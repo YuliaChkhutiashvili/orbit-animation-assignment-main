@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" width="100%" height="100%">
+  <defs>
+    <style>
+      .bg { fill: #0b0f19; }
+      .orbit-line { fill: none; stroke: #334155; stroke-width: 2; stroke-dasharray: 6 6; }
+      .radius-line { stroke: #6366f1; stroke-width: 2; stroke-dasharray: 4 4; }
+      .avatar-box { fill: #162a4c; rx: 28; stroke: #38bdf8; stroke-width: 2; }
+      .item-circle { fill: #a8e0ab; stroke: #105214; stroke-width: 2; }
+      .counter-circle { fill: #eaa7a8; stroke: #5c1414; stroke-width: 2; }
+      .text-title { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 22px; font-weight: 700; fill: #f8fafc; }
+      .text-sub { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .text-label { font-family: "JetBrains Mono", Consolas, monospace; font-size: 12px; fill: #38bdf8; font-weight: 600; }
+      .text-bold { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 14px; font-weight: 600; fill: #ffffff; text-anchor: middle; }
+      .arrow { stroke: #10b981; stroke-width: 2; fill: none; marker-end: url(#arrowhead); }
+      .counter-arrow { stroke: #f43f5e; stroke-width: 2; fill: none; marker-end: url(#arrowhead-red); }
+    </style>
+    <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#10b981" />
+    </marker>
+    <marker id="arrowhead-red" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#f43f5e" />
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="600" class="bg" />
+
+  <!-- Title & Header -->
+  <text x="40" y="45" class="text-title">CSS Orbit Mechanics: ორბიტალური მოძრაობა და Counter-Rotation</text>
+  <text x="40" y="70" class="text-sub">როგორ მუშაობს წრიული განლაგება და რატომ სჭირდება აიქონებს საპირისპირო ბრუნვა</text>
+
+  <!-- Orbit Center (450, 330) -->
+  <g transform="translate(450, 330)">
+    <!-- Orbit Path -->
+    <circle r="190" class="orbit-line" />
+
+    <!-- Center Avatar -->
+    <rect x="-65" y="-65" width="130" height="130" class="avatar-box" />
+    <text x="0" y="5" class="text-bold">Center Avatar</text>
+    <text x="0" y="24" class="text-label" text-anchor="middle" fill="#93c5fd">.avatar</text>
+
+    <!-- Radius Line -->
+    <line x1="0" y1="0" x2="0" y2="-190" class="radius-line" />
+    <rect x="10" y="-115" width="165" height="30" fill="#0f172a" rx="4" stroke="#6366f1" stroke-width="1" />
+    <text x="18" y="-95" class="text-label" fill="#a5b4fc">--orbit-radius</text>
+
+    <!-- Center Pivot Indicator -->
+    <circle r="5" fill="#f43f5e" />
+    <text x="-12" y="2" class="text-label" text-anchor="end" fill="#f43f5e">Pivot (0,0)</text>
+
+    <!-- Top Item (0 deg) -->
+    <g transform="translate(0, -190)">
+      <circle r="42" class="item-circle" />
+      <text x="0" y="5" class="text-bold" fill="#105214">Item 1</text>
+      <!-- Rotation Indicator -->
+      <path d="M 35 -20 A 45 45 0 0 1 50 15" class="arrow" />
+      <text x="60" y="0" class="text-label" fill="#10b981">+360° Orbit</text>
+    </g>
+
+    <!-- Right Item (90 deg) -->
+    <g transform="translate(190, 0)">
+      <circle r="42" fill="#a7c4e0" stroke="#123350" stroke-width="2" />
+      <text x="0" y="5" class="text-bold" fill="#123350">Item 3</text>
+      <text x="0" y="55" class="text-label" text-anchor="middle" fill="#94a3b8">angle: 90°</text>
+    </g>
+
+    <!-- Bottom Item (180 deg) - Demonstration of Counter Rotation -->
+    <g transform="translate(0, 190)">
+      <circle r="42" class="counter-circle" />
+      <!-- Upright Icon text -->
+      <text x="0" y="5" class="text-bold" fill="#5c1414">Item 5</text>
+      <text x="0" y="22" class="text-label" text-anchor="middle" fill="#5c1414">(Upright)</text>
+      <!-- Counter rotation arrow -->
+      <path d="M -35 20 A 45 45 0 0 1 -50 -15" class="counter-arrow" />
+      <text x="-60" y="5" class="text-label" text-anchor="end" fill="#f43f5e">-360° Counter</text>
+    </g>
+
+    <!-- Left Item (270 deg) -->
+    <g transform="translate(-190, 0)">
+      <circle r="42" fill="#fdd095" stroke="#8f5203" stroke-width="2" />
+      <text x="0" y="5" class="text-bold" fill="#8f5203">Item 7</text>
+      <text x="0" y="55" class="text-label" text-anchor="middle" fill="#94a3b8">angle: 270°</text>
+    </g>
+
+    <!-- Diagonal Items (dots) -->
+    <circle cx="134" cy="-134" r="30" fill="#d5a3da" opacity="0.6" />
+    <circle cx="134" cy="134" r="30" fill="#b1b8e1" opacity="0.6" />
+    <circle cx="-134" cy="134" r="30" fill="#f3edab" opacity="0.6" />
+    <circle cx="-134" cy="-134" r="30" fill="#d5ad98" opacity="0.6" />
+  </g>
+
+  <!-- Side Explanatory Cards -->
+  <!-- Formula Box Left -->
+  <g transform="translate(40, 120)">
+    <rect width="250" height="130" fill="#111827" stroke="#1e293b" rx="8" />
+    <text x="15" y="28" class="text-title" font-size="14" fill="#38bdf8">1. ორბიტის რადიუსი:</text>
+    <text x="15" y="55" class="text-label" fill="#a5b4fc">--orbit-radius =</text>
+    <text x="15" y="75" class="text-label" fill="#e2e8f0">0.5*(avatar + item) +</text>
+    <text x="15" y="95" class="text-label" fill="#e2e8f0">--orbit-spacing</text>
+  </g>
+
+  <!-- Counter-Rotation Box Right -->
+  <g transform="translate(610, 120)">
+    <rect width="250" height="150" fill="#111827" stroke="#1e293b" rx="8" />
+    <text x="15" y="28" class="text-title" font-size="14" fill="#f43f5e">2. Counter-Rotation:</text>
+    <text x="15" y="52" class="text-sub">თუ ორბიტა ბრუნავს</text>
+    <text x="15" y="70" class="text-label" fill="#10b981">0deg -> 360deg,</text>
+    <text x="15" y="92" class="text-sub">შიდა აიქონი უნდა ბრუნავდეს</text>
+    <text x="15" y="112" class="text-label" fill="#f43f5e">0deg -> -360deg,</text>
+    <text x="15" y="132" class="text-sub">რათა თავდაყირა არ დადგეს!</text>
+  </g>
+</svg>

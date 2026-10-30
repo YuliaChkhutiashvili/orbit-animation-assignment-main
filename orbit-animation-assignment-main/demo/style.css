@@ -1,0 +1,309 @@
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+html,
+body {
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	display: grid;
+	place-items: center;
+	background-color: #f0f7fe;
+	z-index: 0;
+}
+
+.menu {
+	--ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+	--ease-in-out-expo: cubic-bezier(0.87, 0, 0.13, 1);
+
+	--avatar-size: 12em;
+	--item-size: 8em;
+	--icon-size: 2.75em;
+	--orbit-spacing: 4.5em;
+	--orbit-items: 8;
+	--orbit-phase: 0deg;
+	--orbit-dur: 60s;
+	--orbit-delay: 2s;
+
+	--orbit-step: calc(360deg / var(--orbit-items));
+}
+
+.menu,
+.avatar,
+.orbit,
+.orbit li,
+.item-wrap,
+.item,
+.icon,
+.icon svg {
+	width: var(--size);
+	height: var(--size);
+}
+
+.menu {
+	--size: var(--avatar-size);
+	position: relative;
+	/* 	z-index: 1; */
+	display: grid;
+	place-items: center;
+	animation: appear-menu cubic-bezier(0.22, 1, 0.36, 1) 0.6s both;
+}
+
+.avatar {
+	--size: var(--avatar-size);
+	position: relative;
+	z-index: 1;
+	grid-area: 1 / -1;
+	border-radius: calc(0.31 * var(--size));
+	background-color: #162a4c;
+	transition: 1s;
+}
+
+.orbit {
+	--size: 100%;
+	position: relative;
+	/* 	z-index: -1; */
+	display: grid;
+	place-items: center;
+	grid-area: 1 / -1;
+	margin: 0;
+	padding: 0;
+	animation: orbit linear var(--orbit-dur) var(--orbit-delay) both infinite;
+}
+
+.orbit li {
+	--pos: 0;
+	--dot-color: lightgrey;
+	--bg-color: grey;
+	--hover-color: grey;
+	--icon-color: darkgrey;
+
+	--size: var(--item-size);
+	--angle: calc(var(--pos) * var(--orbit-step));
+	--orbit-radius: calc(
+		0.5 * (var(--avatar-size) + var(--item-size)) + var(--orbit-spacing)
+	);
+	position: relative;
+	bottom: var(--orbit-radius);
+	grid-area: 1 / -1;
+	border-radius: 100%;
+	transform-origin: 50% calc(50% + var(--orbit-radius));
+	transform: rotate(calc(-1 * var(--angle) + var(--orbit-phase)));
+	transition: 0.3s;
+	list-style: none;
+	/* 	animation: appear-orbit var(--ease-out-expo) 0.6s both; */
+}
+
+.avatar:hover ~ .orbit {
+	--orbit-spacing: 6em;
+}
+
+.item-wrap {
+	--size: 100%;
+	border-radius: inherit;
+	transform-origin: center;
+	transform: rotate(calc(var(--angle) - var(--orbit-phase)));
+	animation: counter-orbit linear var(--orbit-dur) var(--orbit-delay) both
+		infinite;
+}
+
+.item {
+	--size: 100%;
+	overflow: hidden;
+	padding: calc(0.5 * (var(--item-size) - var(--icon-size)));
+	border-radius: inherit;
+	background: var(--bg-color);
+	box-shadow: 0 0.75em 1em 0 rgba(0, 0, 0, 0.05);
+	transition: 0.2s;
+	animation: throbbing ease-in-out 1.5s calc(1s + var(--pos) * 0.15s) both
+		infinite alternate;
+}
+
+.item:hover {
+	background: radial-gradient(transparent 62%, rgba(0, 0, 0, 0.25)),
+		var(--hover-color);
+	animation-play-state: paused;
+}
+
+.item::after {
+	position: absolute;
+	inset: 0;
+	padding: 3.5em 1.5em 1.5em;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: white;
+	font-family: "Montserrat", "Arial", "sans-serif";
+	font-size: 0.9em;
+	font-weight: normal;
+	text-align: center;
+	content: attr(data-category);
+	opacity: 0;
+	transform: scale(0.9) translatey(1em);
+	transition: 0.3s;
+}
+
+.item:hover .icon svg {
+	fill: white;
+	transform: scale(0.5);
+}
+
+.item:hover .icon {
+	border-radius: 0 0 100% 100%;
+	background: rgba(0, 0, 0, 0.5);
+	transform: translatey(-2.65em);
+	transition: all 0.3s, background 0.3s 0.15s;
+}
+
+.item:hover::after {
+	opacity: 1;
+	transform: scale(1);
+}
+
+.orbit:hover,
+.orbit:hover .item-wrap {
+	animation-play-state: paused;
+}
+
+.icon {
+	transition: all 0.3s 0.1s, background 0.3s;
+}
+
+.icon svg {
+	--size: 100%;
+	fill: var(--icon-color);
+	transition: 0.3s;
+}
+
+li.plane svg {
+	transform-origin: 50% 50%;
+	transform: rotate(-45deg);
+}
+
+li.adduser {
+	--pos: 0;
+	--bg-color: #d5a3da;
+	--icon-color: #470c4a;
+	--hover-color: #6f1578;
+}
+
+li.calendar {
+	--pos: 1;
+	--bg-color: #a8e0ab;
+	--icon-color: #105214;
+	--hover-color: #1d8222;
+}
+
+li.chart {
+	--pos: 2;
+	--bg-color: #a7c4e0;
+	--icon-color: #123350;
+	--hover-color: #1e4f82;
+}
+
+li.gavel {
+	--pos: 3;
+	--bg-color: #fdd095;
+	--icon-color: #8f5203;
+	--hover-color: #d07906;
+}
+
+li.plane {
+	--pos: 4;
+	--bg-color: #b1b8e1;
+	--icon-color: #2f3a83;
+	--hover-color: #2f3a83;
+}
+
+li.logout {
+	--pos: 5;
+	--bg-color: #f3edab;
+	--icon-color: #686017;
+	--hover-color: #564f0f;
+}
+
+li.drink {
+	--pos: 6;
+	--bg-color: #d5ad98;
+	--icon-color: #5a4135;
+	--hover-color: #7f5b4d;
+}
+
+li.fingerprint {
+	--pos: 7;
+	--bg-color: #eaa7a8;
+	--icon-color: #5c1414;
+	--hover-color: #931e1e;
+}
+
+@keyframes orbit {
+	from {
+		transform: rotate(0deg);
+	}
+
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+@keyframes counter-orbit {
+	from {
+		transform: rotate(calc(0deg + var(--angle) - var(--orbit-phase)));
+	}
+
+	to {
+		transform: rotate(calc(-360deg + var(--angle) - var(--orbit-phase)));
+	}
+}
+
+@keyframes throbbing {
+	0% {
+		transform: scale(0.95);
+	}
+
+	100% {
+		transform: scale(1.05);
+	}
+}
+
+@keyframes appear-menu {
+	from {
+		opacity: 0;
+		transform: translatey(2em);
+	}
+
+	to {
+		opacity: 1;
+	}
+}
+
+@keyframes appear-avatar {
+	from {
+		transform: scale(1.2);
+	}
+
+	to {
+		transform: scale(1);
+	}
+}
+
+@keyframes appear-orbit {
+	0% {
+		--orbit-spacing: 4em;
+	}
+
+	50% {
+		--orbit-spacing: 6em;
+	}
+
+	100% {
+		--orbit-spacing: 4em;
+	}
+}
